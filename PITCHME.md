@@ -49,12 +49,13 @@ fat = (
 +++
 ### Reparem
 
+@ul
 * Nenhum condicional (?)
 * Nenhum booleano (!?)
 * Não faz referência a nenhum número ou operação matemática (WAT?!)
 * Somente funções que recebem e retornam funções...
 * (E funciona)
-
+@ulend
 
 +++
 ###  Números são codificados como funções...
@@ -90,11 +91,13 @@ realmente funciona:
 Uma única expressão Python (208 bytes, gzipped):
 
 @ul
-* Define números naturais, multiplicação e subtração
-* Define booleanos
-* Implementa o comando "if"
-* Implementa recursão de funções
-* (Ah!, e também a função fatorial...)
+
+- Define números naturais, multiplicação e subtração
+- Define booleanos
+- Implementa o comando "if"
+- Implementa recursão de funções
+- (Ah!, e também a função fatorial...)
+
 @ulend
 
 
