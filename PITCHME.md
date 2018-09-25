@@ -9,7 +9,7 @@ Fábio Macêdo Mendes
 ## Programação orientada a funções
 
 
----
++++
 Funções são os blocos básicos da programação
 
 ```python
@@ -21,8 +21,8 @@ def fat(n):
 ```
 
 
----
-### Fatorial funcional fundamentalista (à la 1940)
++++
+### Fatorial funcional fundamentalista (à la 1930)
 
 ```python
 fat = (
@@ -46,7 +46,7 @@ fat = (
 ```
 
 
----
++++
 ### Reparem
 
 * Nenhum condicional (?)
@@ -56,24 +56,25 @@ fat = (
 * (E funciona)
 
 
----
++++
 ###  Números são codificados como funções...
 
 ```python
 def five(f, x):
     return f(f(f(f(f(x)))))
-```
 
-### ...das quais extraímos diferentes representações
-
-```python
 >>> five(lambda x: x + 1, 0)
 5
 >>> five(lambda x: '-' + x, '')
 '-----'
 ```
+@[1-2](Número 5: aplicamos f 5 vezes em x)
+@[4](f: incrementa por um, começamos em x=0)
+@[4-5]
+@[6](Podemos usar outras codificações)
+@[6-7]
 
----
++++
 Podemos trazer nosso fatorial de volta para o "mundo normal" e verificar que ele 
 realmente funciona:
 
@@ -83,18 +84,18 @@ realmente funciona:
 ```
 
 
----
++++
 ### Resumindo...
 
 Uma única expressão Python (208 bytes, gzipped):
 
+@ul
 * Define números naturais, multiplicação e subtração
 * Define booleanos
 * Implementa o comando "if"
 * Implementa recursão de funções
 * (Ah!, e também a função fatorial...)
-
-
+@ulend
 
 
 
@@ -102,7 +103,7 @@ Uma única expressão Python (208 bytes, gzipped):
 ## Cálculo lambda
 
 
----
++++
 ### O que aconteceu nas décadas de 1930/40?
 
 * Problemas sérios nos fundamentos da matemática (Gödel)
@@ -113,7 +114,7 @@ Uma única expressão Python (208 bytes, gzipped):
     - Quais passos podem ser realizados por uma máquina?
     
 
----
++++
 ### O que pode ser efetivamente computado?
 
 Em que condições uma função produz resultados usando apenas processos bem definidos?
@@ -123,7 +124,7 @@ Em que condições uma função produz resultados usando apenas processos bem de
 * Turing (1936): modelo mecânico para computação; máquina de Turing
 
 
----
++++
 ### Turing: Hardware
 
 * Evoluiu para um modelo para as linguagens imperativas
@@ -135,7 +136,7 @@ Em que condições uma função produz resultados usando apenas processos bem de
 * O foco passou a ser arquitetura e otimizações
 
 
----
++++
 ### Church: Software
 
 * Cálculo lambda: computação por transformações matemáticas simples
@@ -157,24 +158,17 @@ Em que condições uma função produz resultados usando apenas processos bem de
 ## Conceitos de programação funcional:
 ### Funções como valores
 
---- 
-### Funções de primeira ordem:
++++ 
 ```python
 def add(x, y):
     return x + y
-```
 
-### Segunda ordem: funções como valores
-```python
 def map(func, lst):
     result = []
     for x in lst:
         result.append(func(x))
     return result
-```
 
-### Segunda ordem: closures
-```python
 def incr_by(n):
     def incrementer(x):
         return x + n
@@ -185,15 +179,18 @@ def flip(f):
         return f(y, x)
     return flipped
 ```
+@[1-2](Funções de primeira ordem)
+@[4-8](Segunda ordem: funções como valores)
+@[10-13](Segunda ordem: closures)
+@[15-18](Transformações de funções)
 
 
----
++++
 ### Exemplo: decoradores
 ```python
 @route('users/<id>')
 def profile(id):
     return "Hello {get_user(id)}"
-
 
 def route(url):
     def decorator(func):
@@ -207,9 +204,16 @@ def route(url):
         
     return decorator
 ```
+@[1-3](Função decorada)
+@[5](Função route recebe uma url...)
+@[15](... e retorna um decorador)
+@[6](Decorador recebe uma função...)
+@[13](... e retorna uma função decorada)
+@[7](Usamos um decorador dentro do nosso decorador!)
+@[7-10](Função transformada)
 
 
----
++++
 ### Repassando argumentos
 
 ```python
@@ -232,7 +236,7 @@ def func(*args, **kwargs):
 ### Geradores, iteradores, etc
 
 
----
++++
 ### Compreensão de listas
 
 ```python
@@ -243,7 +247,7 @@ def filter(pred, lst):
     return [x for x in lst if pred(x)]
 ```
 
----
++++
 ### Também temos dicionários, conjuntos e geradores
 
 ```python
@@ -252,7 +256,7 @@ conjunto = {func(x) for x in lst}
 gerador = (func(x) for x in lst)
 ```
 
----
++++
 ### Geradores 
 
 ```python
@@ -269,7 +273,7 @@ for x in fibos():
     print(x)    
 ```
 
----
++++
 ### Manipulando iteradores
 
 * itertools.count(): 0, 1, 2, 3, ...
@@ -284,7 +288,7 @@ for x in fibos():
 ## Conceitos de programação funcional:
 ### Funções puras
 
---- 
++++ 
 ### Funções puras
 
 Calcula um único valor para um conjunto de argumentos (e não faz mais nada além disto)
@@ -299,13 +303,16 @@ def pura(x, y):
     # Não faz IO
     return x + y
 ```
+@[2]
+@[3]
+@[4]
+@[5]
+@[6]
+@[7]
+@[1-8](Funções puras são definidas pela interface e não pela implementação)
 
-Funções puras são definidas pela interface e não pela implementação
-
----
++++
 ### Anti-patterns impuras
-
-Python é uma linguagem impura: pureza precisa ser mantida por disciplina 
 
 ```python
 def sem_argumentos_de_entrada():
@@ -320,17 +327,22 @@ def impura_disfarçada(x, y):
         lance_os_mísseis()
     return x + y
 ```
+@[1-3](Funções sem argumentos: constantes?)
+@[5-6](Funções sem retorno: por que chamou?)
+@[8-11](Efeitos colaterais: parece função mais não é)
+@[1-11](Python é uma linguagem impura: pureza precisa ser mantida por disciplina)
 
----
+
++++
 ### Mais anti-patterns
 
 ```python
 def join_lists(list_a, list_b):
-    # Modifica list_a
     list_a.extend(list_b)
     return list_a
 
 def read_file():
-    # Resultado depende do conteúdo de file.txt
     return open('file.txt').read()
 ```
+@[1-3](Modifica a lista list_a)
+@[5-6](Resultado depende do conteúdo de file.txt)
