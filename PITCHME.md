@@ -5,6 +5,7 @@ Python Cerrado 2018
 Fábio Macêdo Mendes
 
 
+
 ---
 ## Programação orientada a funções
 
@@ -50,12 +51,12 @@ fat = (
 ### Reparem
 
 @ul
-* Nenhum condicional (?)
-* Nenhum booleano (!?)
-* Não faz referência a nenhum número ou operação matemática (WAT?!)
-* Somente funções que recebem e retornam funções...
-* (E funciona)
+- Nenhum condicional **(?)**
+- Nenhum booleano **(!?)**
+- Não faz referência a nenhum número ou operação matemática **(WAT?!)**
+- Somente funções que recebem e retornam funções...
 @ulend
+
 
 +++
 ###  Números são codificados como funções...
@@ -68,37 +69,32 @@ def five(f, x):
 5
 >>> five(lambda x: '-' + x, '')
 '-----'
+>>> result = fat(five)
+>>> result(lambda x: x + 1, 0)
+120
 ```
 @[1-2](Número 5: aplicamos f 5 vezes em x)
 @[4](f: incrementa por um, começamos em x=0)
 @[4-5]
 @[6](Podemos usar outras codificações)
 @[6-7]
-
-+++
-Podemos trazer nosso fatorial de volta para o "mundo normal" e verificar que ele 
-realmente funciona:
-
-```python
->>> fat(five)(lambda x: x + 1, 0)
-120 
-```
+@[8](Executamos o fatorial)
+@[8-10]
 
 
 +++
 ### Resumindo...
 
-Uma única expressão Python (208 bytes, gzipped):
+Expressão Python (208 bytes, gzipped):
 
 @ul
-
 - Define números naturais, multiplicação e subtração
-- Define booleanos
+- Declara booleanos
 - Implementa o comando "if"
 - Implementa recursão de funções
-- (Ah!, e também a função fatorial...)
-
+- Ah! E também calcula a função fatorial...
 @ulend
+
 
 
 
