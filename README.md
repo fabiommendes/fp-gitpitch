@@ -1,4 +1,4 @@
 # Programação funcional em Python
 
-Vá para https://gitpitch.com/fabiommendes/fp-gitpitch/master para visualizar a
+Vá para https://gitpitch.com/fabiommendes/fp-gitpitch/master?t=moon para visualizar a
 apresentação.

@@ -43,8 +43,8 @@ fat = \
 ```
 @[1] 
 @[2] (Lambda, lambda, lambda...)
-@[5-8] (WAT?)
-@[9-11] (???)
+@[5-8] (mais lambdas...)
+@[9-11] (WAT?)
 
 
 +++
@@ -58,7 +58,7 @@ def fat(n):
     else:
         return n * fat(n - 1)
 ```
-@[2] (Lambda não possui condicional)
+@[2] (Lambda-lambda não possui condicional)
 @[3] (não usa literais de números ou booleanos)
 @[5] (não faz referência a nenhum número ou operação matemática)
 @[1-5] (Somente funções que recebem e retornam funções...)
@@ -90,14 +90,15 @@ def five(f, x):
 
 
 +++
-### Fatorial from scratch
+### Fatorial *realmente* do zero
 
 @ul
-- Uma única expressão Python, 208 bytes, gzipped
+- Uma única expressão Python
+- 10 linhas, 208 bytes gzipped
 - Define números naturais, multiplicação e subtração
 - Booleanos e o comando "if"
 - Implementa recursão de funções
-- No espaço restante implementa o fatorial...
+- Ainda sobra espaço para implementar o fatorial...
 @ulend
 
 
@@ -109,30 +110,22 @@ def five(f, x):
 
 
 +++
-### O que aconteceu nas décadas de 1930/40 que fez as pessoas começarem a pensar daquele jeito?
+### Sim! (qualquer coisa computável...)
+#### Porque surgiu algo como o fatorial lambda-lambda?
 
 @ul
-* Abalos nas fundações da matemática: teorema da incompetude de Gödel
-* *Existem afirmações verdadeiras na matemática que não podem ser demonstradas*
+- Matemática com **fundações abaladas**: teorema da incompetude de Gödel
+- *Existem afirmações verdadeiras na matemática que não podem ser demonstradas por nenhum método de prova formal*
 @ulend
 
     
 +++ 
-### Ponto central é a noção de prova e algoritmo
+### Prova e algoritmo
 
 @ul
 - Quais verdades matemáticas podem ser demonstradas sistematicamente?
 - Quais funções podem ser computadas por um processo mecânico?
 - Quais passos podem ser realizados por uma máquina idealizada?
-@ulend
-
-
-+++
-### O que pode ser efetivamente computado?
-
-@ul
-- Programas são funções $$P(inputs) = results$$
-- Que tipo de funções matemáticas retornam valores usando apenas passos bem definidos?
 @ulend
 
 
@@ -171,11 +164,9 @@ def five(f, x):
 - John Backus (1978): *"A programação pode se libertar do estilo Von Neumann?"*
 - Lazy evaluation e Haskell (1990)
 - Renascimento funcional (2000s): 
-    @ul[](false)
     - Novas linguagens funcionais
     - Adoção de idiomas funcionais por outras linguagens
     - Saiu dos nichos acadêmicos
-    @ulend
 @ulend
 
 
@@ -311,7 +302,7 @@ def pura(x, y):
 
 
 +++
-### Anti-patterns impuras
+### Anti-patterns
 
 ```python
 def sem_argumentos_de_entrada():
@@ -325,26 +316,26 @@ def impura_disfarçada(x, y):
     if random.random() < 0.01:
         dispare_os_mísseis()
     return x + y
+
+def join_lists(list_a, list_b):
+    list_a.extend(list_b)
+    return list_a
 ```
-@[1-3](Funções sem argumentos; seriam constantes?)
+@[1-3](Funções sem argumentos; deveriam ser constantes?)
 @[5-6](Funções sem retorno; por que chamou?)
-@[8-11](Efeitos colaterais: parece função mais não é)
+@[8-11](Parece função, mas não é)
+@[13-15](Modifica objeto mutável)
 @[1-11](Python é uma linguagem impura: pureza precisa ser mantida por disciplina)
 
 
 +++
-### Nota: mais anti-patterns
+### Pureza
 
-```python
-def join_lists(list_a, list_b):
-    list_a.extend(list_b)
-    return list_a
+- Testáveis e fáceis de entender
+- Menos bugs
+- Paralelizável
+- Reutilizável
 
-def read_file():
-    return open('file.txt').read()
-```
-@[1-3](Modifica a lista list_a)
-@[5-6](Resultado depende do conteúdo de file.txt)
 
 
 
@@ -359,6 +350,7 @@ def read_file():
 - Centrado em dados: T(data) -> new_data
 - Encadeamos funções simples para gerar funções mais complexas
 - Grande reaproveitamento de código
+- Funções são Lego e classes Playmobil
 @ulend
 
 
@@ -413,18 +405,16 @@ def compose(*funcs):
 ### Explosão de Lambdas
 
 ```python
-read_csv = compose(
+to_table = compose(
     str.splitlines,
     lambda lines: map(lambda line: line.split(','), lines),
     lambda lines: map(lambda line: map(float, line), lines),
-    lambda lines: map(sum, lines),
 )
 ```
 @[2] (Separa string em linhas)
 @[3] (Mapeia função para separar linhas nas vírgulas)
 @[4] (Aplica a função float a cada elemento)
-@[5] (Soma os valores de cada linha)
-@[1-6] (Código semi-ilegível)
+@[1-5] (Código semi-ilegível)
 
 
 +++ 
@@ -434,15 +424,14 @@ read_csv = compose(
 def fmap(f): 
     return lambda data: map(f, data)
 
-read_csv = compose(
+to_table = compose(
     str.splitlines,
     fmap(lambda line: line.split(',')),
     fmap(fmap(float)),
-    fmap(sum),
 )
 ```
 @[1-2] (Recebe f e retorna função que aplica f no argumento com map)
-@[6-8] (Não precisamos criar o lambda que recebe as linhas)
+@[6-7] (Não precisamos criar o lambda que recebe as linhas)
 @[6] (Este ainda resiste :-[)
 
 
@@ -502,27 +491,28 @@ curry = curry(2, curry)
 
 
 +++
-### Compreensão de listas
+### Compreensões e geradores
 
 ```python
 def map(func, lst):
-    return [func(x) for x in lst]
+    return (func(x) for x in lst)
 
 def filter(pred, lst):
-    return [x for x in lst if pred(x)]
+    return (x for x in lst if pred(x))
 ```
 
-@[1-2] (Lista gerada por um laço for)
+@[1-2] (Sequência de valores gerada por um laço for)
+@[1-2] (Geradores são "lazy")
 @[4-5] (É possível filtrar valores utilizando um "if")
 
 
 +++
-### Nota: Também temos dicionários, conjuntos e geradores
+### Nota: Também temos dicionários, conjuntos e listas
 
 ```python
-dicionario = {x: func(x) for x in lst}
+lista = [func(x) for x in lst]
 conjunto = {func(x) for x in lst}
-gerador = (func(x) for x in lst)
+dicionario = {x: func(x) for x in lst}
 ```
 
 +++
@@ -544,12 +534,12 @@ for x in fibos():
 
 @[1] (Geradores são funções que "retornam" várias vezes)
 @[7] (yield retorna um valor, mas não interrompe a função)
-@[3] (yield from retorna todos valor de uma lista)
+@[3] (yield from retorna todos valores de uma lista)
 @[9-11] (Extraímos elementos chamando gerador em um laço for ou criando lista)
 
 
 +++
-### Nota: manipulando iteradores
+### P/ casa: manipulando iteradores
 
 ```python
 >>> itertools.count()
@@ -562,7 +552,7 @@ ok_a, ok_b, ...
 f(f(f(a, b), c), ...)
 >>> itertools.chain([a, b], [c, d, ...])
 a, b, c, d, ...
->>> itertools.islice([a, b, c, ...], 0, 2)
+>>> itertools.islice([a, b, c, ...], 0, 3)
 a, b, c
 ```
 @[1-2] (Conta números indefinidamente)
@@ -573,9 +563,12 @@ a, b, c
 @[11-12] (Fatia iterador como se fosse lista)
 
 
+
+
 ---
 ## Receitas
 #### (algoritmos)
+
 
 +++
 ### Raiz de um número
@@ -583,6 +576,7 @@ a, b, c
 * Raiz de y: iteramos a relação de recorrência $$x' = (y/x + x) / 2$$
 * Inicia-se tipicamente em x=1
 * Convergência rápida
+
 
 +++
 ### Recorência
@@ -595,12 +589,15 @@ def repeat(f, x):
         x = f(x)
         yield x
 
->>> repeat(lambda x: (2 / x + x) * 0.5, 1.0)
-1.0, 1.5, 1.41666, ...
+>>> rec_sqrt_2 = lambda x: 0.5 * (2 / x + x)
+>>> repeat(rec_sqrt_2, 1.0)
+1.0, 1.5, 1.41666, 1.4142156862745097, ...
 ```
 @[2] (Gera valor sem aplicar)
 @[4-5] (Aplica função e gera)
 @[1-5] (Trata-se de um gerador infinito)
+@[7] (Definimos relação de recorrência)
+@[8-9] (Gera um stream infinito)
 
 
 +++
@@ -616,8 +613,8 @@ def within(eps, it):
             return x
         y = x
 
->>> within(0.1, repeat(lambda x: x / 2, 1.0))
-1.0, 0.5, 0.25, 0.125, 0.0625
+>>> within(0.1, repeat(rec_sqrt_2, 1.0))
+1.0, 1.5, 1.41666
 ```
 @[3] (Extrai o primeiro elemento do iterador)
 @[4] (Retorna os termos subsequentes, comparando com o anterior)
@@ -625,38 +622,24 @@ def within(eps, it):
 
 
 +++
-### Relações de recorrência
-
-```python
-@curry(2)
-def step_newton(n, y):
-    if n == 2:
-        return lambda x: (y / x + x) * 0.5
-    else:
-        alpha = n - 1
-        factor = 1 / n
-        return lambda x: (y / x**alpha + x) * factor
-```
-@[2-3] (Especializamos para raiz quadrada)
-@[4-7] (Recorência para qualquer n)
-
-
-+++
 ### Juntamos tudo
 
 ```python
 def sqrt(y):
-    return within(1e-9, repeat(step_newton(2, y), 1))
+    return within(1e-9, repeat(rec_sqrt(y), 1))
 
->>> sqrt = compose(step_newton(2),
-...                lambda f: repeat(f, 1),
-...                within(1e-9)) 
+req_sqrt = lambda y: lambda x: 0.5 * (y / x + x)
+repeat_from = flip(repeat)
+sqrt = compose(rec_sqrt(y),
+               repeat_from(1),
+               within(1e-9)) 
 ```
 @[1-2] (Mantemos algum apego ao Python tradicional)
-@[4-7] (Funcional A+)
-@[4] (Podemos trocar a regra de recorrência)
-@[6] (Critério de convergência)
-@[5] (Convergência acelerada e outros métodos)
+@[3] (Onde definimos a relação de recorrência "curried")
+@[4-7] (Trocamos a ordem dos argumentos para obter um funcional A+)
+@[5] (Fácil trocar a regra de recorrência...)
+@[7] (...e o critério de convergência)
+@[6] (além de explorar convergência acelerada e outros métodos)
 
 
 
@@ -667,7 +650,7 @@ def sqrt(y):
 +++
 ### Lista simplesmente encadeada
 
-* Estutura de dados imutável favorita
+* Estutura de dados imutável #1
 * Compartilhamento eficiente
 * Fácil de manipular
 
@@ -692,8 +675,8 @@ def foldl(f, start, lst):
     return start
 ```
 @[1] (A cabeça carrega o valor e a cauda o resto da lista)
-@[4-9] (Como reduce, mas reduz da direita pra esquerda)
-@[5] (Cauda None termina a lista)
+@[3-8] (f(a, f(b, f(c, start))))
+@[10-15] (f(c, f(b, f(a, start))))
 
 
 +++
@@ -743,6 +726,115 @@ def to_seq(lst):
 ```
 
 
+---
+## Melhore seu kung-fu
+#### Aprenda Haskell para melhorar seu Python 
+
++++
+### Python não é funcional...
+
+@ul
+- Não acredite em "multiparadigma": *você não vai conseguir fazer algo grande usando apenas Python funcional*
+- Exige disciplina
+- Mutabilidade em todo canto
+- Estruturas de dados e tipos inadequadas
+- Sintaxe carregada e imperativa
+- Recursão e abstrações podem ser caras
+- Pouquíssimas garantias estáticas
+@ulend
+
+
++++
+### Mas dá pro gasto...
+
+@ul
+- Funções como valores
+- Geradores e listas lazy
+- Lambdas
+- Expressiva > libs podem usar truques de sintaxe
+@ulend
+
+
++++
+### Programação funcional para o bem comum! 
+
+@ul
+- Componha funções: função boa é função pequena
+- Não tenha medo de funções de segunda ordem
+- Prefira iteradores a listas
+- Valorize pureza e crie interfaces imutáveis
+- Entenda o fluxo de dados e não o diagrama de classes
+@ulend
+
+
++++
+### Mais funções, menos classes
+#### __init__ + run ==> função escrita como classe
+
+```python
+class Class:
+    def __init__(self, a):
+        self.a = a
+
+    def run(self, b):
+        return do_something(self.a, b)
+
+def func(a, b):
+    return do_something(a, b)
+
+func(a, b) == Class(a)(b)
+
+obj = Class(a)
+obj = functools.partial(func, a)
+```
+@[1-6] (Falsa classe)
+@[8-11] (Na verdade é uma função)
+@[13-14] ("objeto" é uma aplicação parcial)
+
+
++++
+### Mais funções, menos classes
+#### Métodos privados
+
+```python
+# Bad
+class Class:
+    def public(self, a):
+        return self.__private(a)
+
+    def __private(self, a):
+        return ...    
+
+# Good
+class Class:
+    def public(self, a):
+        return private(self, a)
+
+def private(obj, a):
+    return ...   
+```
+@[1-7] (Python não precisa de métodos privados)
+@[9-15] (Se quiser, não exporte "private")
+
+
++++
+### Mais funções, menos classes
+#### Evite herança, construa métodos
+
+```python
+apply = lambda f, attr: lambda self: func(getattr(self, attr))
+
+class ClassA:
+    def common(self): pass
+    
+class ClassB:
+    common = ClassA.common
+    answer = lambda self: 42
+    method = apply(some_func, 'attribute')
+```
+@[1-9] (Herança = "é um", não "tem mesmos métodos que")
+
+
 
 ---
 ## Saiba mais
@@ -752,7 +844,10 @@ def to_seq(lst):
 +++
 ### Referências
 
- + [Why Functional Programming Matters](https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf)
+- [Why Functional Programming Matters](https://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf)
+- [Functional Programming with Python](http://kachayev.github.io/talks/uapycon2012/index.html)
+- [Stop writing classes](https://www.youtube.com/watch?v=o9pEzgHorH0)
+- [Learn You a Haskell for Great Good!](http://learnyouahaskell.com/)
 
 
 +++
@@ -770,22 +865,8 @@ def to_seq(lst):
 +++
 ### Linguagens
 
-
-
-```python
-def map(func, lst):
-    return [func(x) for x in lst]
-
-def filter(pred, lst):
-    return [x for x in lst if pred(x)]
-```
-
-@[1-2] (Lista gerada por um laço for)
-@[4-5] (É possível filtrar valores utilizando um "if")
-
-
-@ul
-- Saiba mais: 
-    + itertools e functools na stdlib
-    + toolz, sidekick
-@ulend
+- ELM: puramente funcional para Frontend
+- Haskell: funcional séria
+- Scala: funcional + OO
+- Scheme: tradição LISP  
+- Clojure: uma LISP moderna
