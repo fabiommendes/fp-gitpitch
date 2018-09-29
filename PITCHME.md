@@ -95,7 +95,7 @@ def five(f, x):
 
 
 ---
-## História: Cálculo lambda
+## História p/ casa: Cálculo lambda
 ##### (podemos utilizar funções para computar qualquer coisa?)
 
 
@@ -737,17 +737,19 @@ def to_seq(lst):
 ### Programação funcional para o bem comum! 
 
 @ul
-- Componha funções: função boa é uma função pequena
-- Não tenha medo de funções de segunda ordem
-- Prefira iteradores a listas
-- Valorize pureza e crie interfaces imutáveis
 - Entenda o fluxo de dados e não o diagrama de classes
+- Mostre seus dados com iterfaces imutáveis
+- Componha funções
+    + função boa é uma função pequena
+    + prefira funções puras
+- Não tenha medo da segunda ordem
+- Use iteradores sempre que possível
 @ulend
 
 
 
 ---
-## Orientação a objetos
+## P/ casa: Orientação a objetos
 ### Conciliação e disputa
 
 
@@ -756,50 +758,25 @@ def to_seq(lst):
 
 ```python
 class Class:
-    def __init__(self, a, b, c):
+    def __init__(self, a, b):
         self.a = a
         self.b = b
-        self.c = c
 
-    def func(self):
-        return do_something(self.a, self.b, self.c)
+    def func(self, c):
+        return do_something(self.a, self.b, c)
 
 def func(a, b, c):
     return do_something(a, b, c)
 
-func(a, b, c) == Class(a, b, c).func()
+func(a, b, c) == Class(a, b).func(c)
 
 obj = Class(a, b, c)
-x = functools.partial(func, a, b, c)
-y = functools.partial(func, a, b)
+obj = functools.partial(func, a, b)
+obj_alt = functools.partial(func, a)
 ```
 @[1-8] (Falsa classe)
 @[10-13] (Na verdade é uma função)
 @[15-17] ("objeto" é uma aplicação parcial)
-
-
-+++
-### Menos métodos privados
-
-```python
-# Bad
-class Class:
-    def public(self, a):
-        return self.__private(a)
-
-    def __private(self, a):
-        return ...    
-
-# Good
-class Class:
-    def public(self, a):
-        return private(self, a)
-
-def private(obj, a):
-    return ...   
-```
-@[1-7] (Python não precisa de métodos privados)
-@[9-15] (Se quiser, não exporte "private")
 
 
 +++
@@ -837,6 +814,40 @@ class Vec:
 @[4] (Inicialização atrasada)
 @[5] (Resultado sem cache)
 
+
++++
+### Abuse de protocolos
+
+- Reutilize APIs conhecidas
+- Conheça o módulo `collections`
+- Favoreça builtins no lugar de classes próprias
+- Conheça types.SimpleNamespace e collections.namedtuple
+- Conheça os protocolos: iterable, iterator, decorator, context manager, descriptor, class, etc...
+
+
++++
+### Saiba fazer DSLs
+#### (e use com moderação)
+
+```python
+from operator import *
+from functools import partial
+
+bin_op = (
+    lambda op: lambda self, other:
+    op if other is _ else partial(op, other))
+
+class placeholder:
+    __add__ = bin_op(add)
+    __mul__ = bin_op(mul)
+    ...
+
+_ = placeholder()
+incr = _ + 1
+half = _ / 2
+inverse = 1 / _
+add = _ + _
+```
 
 +++
 ### Conciliação
