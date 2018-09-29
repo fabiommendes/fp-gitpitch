@@ -721,7 +721,7 @@ def to_seq(lst):
 ### Programação funcional para o bem comum! 
 
 @ul
-- Componha funções: função boa é função pequena
+- Componha funções: função boa é uma função pequena
 - Não tenha medo de funções de segunda ordem
 - Prefira iteradores a listas
 - Valorize pureza e crie interfaces imutáveis
@@ -745,13 +745,13 @@ class Class:
         self.b = b
         self.c = c
 
-    def run(self):
+    def func(self):
         return do_something(self.a, self.b, self.c)
 
 def func(a, b, c):
     return do_something(a, b, c)
 
-func(a, b, c) == Class(a, b, c).run()
+func(a, b, c) == Class(a, b, c).func()
 
 obj = Class(a, b, c)
 x = functools.partial(func, a, b, c)
@@ -787,7 +787,7 @@ def private(obj, a):
 
 
 +++
-### Menos herança, construa métodos
+### Menos herança, mais reaproveitamento
 
 ```python
 apply = lambda f, attr: lambda self: func(getattr(self, attr))
@@ -801,6 +801,25 @@ class ClassB:
     method = apply(some_func, 'attribute')
 ```
 @[1-9] (Herança = "é um", não "tem mesmos métodos que")
+
+
++++
+### Menos trabalho agora
+
+```python
+from sidekick import lazy
+from dataclasses import dataclass
+
+@dataclass
+class Vec:
+    x: float
+    y: float
+
+    abs = lazy(lambda self: sqrt(self.x**2 + self.y**2))
+    abs_ = property(lambda self: sqrt(self.x**2 + self.y**2))
+```
+@[4] (Inicialização atrasada)
+@[5] (Resultado sem cache)
 
 
 +++
@@ -848,5 +867,5 @@ class ClassB:
 - ELM: puramente funcional para Frontend
 - Haskell: funcional séria
 - Scala: funcional + OO
-- Scheme: tradição LISP  
+- Scheme: LISP muito utilizada  
 - Clojure: uma LISP moderna
