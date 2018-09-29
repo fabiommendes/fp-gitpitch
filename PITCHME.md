@@ -203,6 +203,11 @@ def route(url):
 
 
 +++
+### Observações
+#### (para fazer em casa...)
+
+
++++
 #### Nota sobre decoradores: repassando argumentos
 
 ```python
@@ -438,6 +443,7 @@ def add(x, y):
 @[10-12]
 
 
+
 ---
 ## Conceitos de programação funcional:
 ### Geradores, iteradores, etc
@@ -500,7 +506,12 @@ for x in fibos():
 
 
 +++
-### P/ casa: manipulando iteradores
+### Dicas
+#### (para fazer em casa...)
+
+
++++
+### Manipulando iteradores
 
 ```python
 >>> itertools.count()
@@ -643,7 +654,7 @@ def foldl(f, start, lst):
 
 
 +++
-### P/ casa: operações com listas
+### Operações com listas
 
 ```python
 from operator import add, mul
@@ -668,6 +679,11 @@ intespace_f = lambda sep: lambda x, lst: cons(sep, cons(x, lst))
 @[9] (Seleciona elementos)
 @[12] (Fazemos um cons condicional)
 @[10] (Insere elementos alternadamente, ugh!)
+
+
++++
+### Dicas
+#### (para fazer em casa...)
 
 
 +++
